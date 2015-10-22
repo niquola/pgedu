@@ -39,18 +39,39 @@
   [:div [:h2 "About pgedu"]
    [:div [:a {:href "#/"} "go to the home page"]]])
 
+(defn tutor-content [tutor]
+  [:div 
+      [:h2 (:title tutor)]
+      (for [part (:parts tutor)]
+       [:div
+        [:b (:title part)] 
+        [:p (:content part)] ]
+       )])
+
 (defn tutor-page [& args]
-  [:div
-   [:pre (pr-str args)]
-   [:h2 "Tutor page"]])
+  (let [tutor ((:tutorials @state/state) (:id (first args)))]
+    [:div
+     [:div.back-link
+      [:a {:href "/#/tutorials"} "<- Back"]]
+     (tutor-content tutor) 
+     ]))
 
 (defn tutors-page []
   [:div
-   [:h2 "Tutor page"]
-   [:pre (pr-str @state/state)]
+   [:h2 "Tutors page"]
    (for [tut (:tutorials @state/state)]
-     [:li [:a {:href (str "#tutorials/" (:id tut))}
-           [:b (:title tut)]]])])
+     [:div
+      [:h4
+        [:a {:href (str "#tutorials/" (:id tut))}
+         [:b (:title tut)]]]
+      [:ul.list-group
+       (for [part (:parts tut)]
+         [:li.list-group-item
+          [:b (:title part)]
+          ]
+         )
+       ]
+      ])])
 
 (def routes
   {:GET  #'home-page
