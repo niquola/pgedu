@@ -3,11 +3,13 @@
             [ring.util.codec :as codec]))
 
 
-(defn read-responce [resp]
-  (slurp (:body  @resp)))
+(defn read-responce [{body :body}]
+  (cond
+    (string? body) body
+    :else (slurp body)))
 
 (defn request-token [code]
-  (read-responce (http/request
+  (read-responce @(http/request
     {:url "https://github.com/login/oauth/access_token"
      :method :post
      :form-params {:client_id "6fe91e73b2db784095aa"
@@ -17,7 +19,7 @@
                    :redirect_uri "http://postgrest.dev.health-samurai.io:3000/auth/callback"}})))
 
 (defn request-profile [access-token]
-  (read-responce (http/request
+  (read-responce @(http/request
     {:url "https://api.github.com/user"
      :method :get
      :headers {"Authorization" (str "token " access-token)}})))

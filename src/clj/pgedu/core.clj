@@ -1,4 +1,4 @@
-(ns pgedu.server
+(ns pgedu.core
   (:require [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
             [ring.middleware.resource :as rmr]
             [hiccup.core :refer [html]]
