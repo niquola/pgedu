@@ -49,6 +49,8 @@
        )])
 
 (defn tutor-page [& args]
+
+  (state/request {:path ["tutorials/" ] :method :GET}) 
   (let [tutor ((:tutorials @state/state) (:id (first args)))]
     [:div
      [:div.back-link
@@ -58,17 +60,17 @@
 
 (defn tutors-page []
   (state/request {:path ["tutorials"] :method :GET}) 
-  
   (fn []
     [:div
-     [:h2 "Tutorials page"]
+     [:h1 "Tutorials page"]
      [:pre (pr-str (:tutorials @state/state))]
      (for [tut (:tutorials @state/state)]
        [:div
-        [:h4
+        [:h3
           [:a {:href (str "#tutorials/" (:id tut))}
            [:b (second (:name tut))]]]
-        [:div (:content tut)]
+        [:div ]
+        [:div (:structure tut)]
        ])
 ]
     ))

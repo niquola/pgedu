@@ -16,11 +16,15 @@
 (defn tutor-parse [tutor-file]
   (md-hiccup tutor-file))
 
+(defn description [tutor]
+  (second tutor))
+
 (defn tutor-desc [tutor-file]
   (let [tutor (tutor-parse tutor-file) ]
     {:id (fs/name tutor-file)
      :name (first tutor) 
-     :content (rest tutor) 
+     :description (description tutor)
+     :structure (filter #(= :h2 (first %)) (rest tutor)) 
      }))
 
 (defn tutorials [& args]
