@@ -57,21 +57,21 @@
      ]))
 
 (defn tutors-page []
-  [:div
-   [:h2 "Tutors page"]
-   (for [tut (:tutorials @state/state)]
-     [:div
-      [:h4
-        [:a {:href (str "#tutorials/" (:id tut))}
-         [:b (:title tut)]]]
-      [:ul.list-group
-       (for [part (:parts tut)]
-         [:li.list-group-item
-          [:b (:title part)]
-          ]
-         )
-       ]
-      ])])
+  (state/request {:path ["tutorials"] :method :GET}) 
+  
+  (fn []
+    [:div
+     [:h2 "Tutorials page"]
+     [:pre (pr-str (:tutorials @state/state))]
+     (for [tut (:tutorials @state/state)]
+       [:div
+        [:h4
+          [:a {:href (str "#tutorials/" (:id tut))}
+           [:b (second (:name tut))]]]
+        [:div (:content tut)]
+       ])
+]
+    ))
 
 (def routes
   {:GET  #'home-page
@@ -82,11 +82,12 @@
 (defn dispatch [event]
   (.log js/console "Dispatch:" event)
   (if-let [m (rm/match [:GET (.-token event)] routes)]
-    (let [mws (mapcat :mw (:parents m))]
-      #_(.log js/console "MWS" (pr-str mws))
+    (let [mws (mapcat :mw (:parents m)) ]
+
       (when (every? (fn [f] (f event)) mws)
         (.log js/console (pr-str (:params m)))
-        (session/put! :current-page (fn [& args] ((:match m) (:params m))))))
+        (session/put! :current-page (fn [& args] 
+                                      ((:match m) (:params m))))))
     (session/put! :current-page (fn [& args] [:h1 (str "Paget " (.-token event) " not found")]))))
 
 
@@ -99,7 +100,7 @@
 
 (defn mount-root []
   (.log js/console "mount-root")
-  (reagent/render [current-page] (.-body js/document)))
+  (reagent/render (current-page) (.-body js/document)))
 
 (defn init! []
   (hook-browser-navigation!)

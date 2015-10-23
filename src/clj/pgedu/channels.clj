@@ -1,6 +1,7 @@
 (ns pgedu.channels
   (:require [org.httpkit.server :as ohs]
-            [simply.formats :as fmt]))
+            [simply.formats :as fmt]
+            [pgedu.tutorials :as tutors]))
 
 (defonce clients (atom {}))
 
@@ -9,9 +10,11 @@
 (defn decode [txt] (fmt/from-transit txt))
 
 (defn add-client [ch usr]
+  (println "Add client")
   (swap! clients assoc ch {:subscriptions [] :user usr}))
 
 (defn rm-client [ch]
+  (println "Removing client")
   (swap! clients dissoc ch))
 
 (defn subscribe [ch topic]
@@ -23,7 +26,7 @@
     (doseq [[ch prop] @clients]
       (ohs/send! ch (encode resp)))))
 
-(def routes {})
+(def routes {"tutorials" {:GET #'tutors/tutorials}})
 
 (defn dispatch [ch msg]
   (println "Message from client" msg)

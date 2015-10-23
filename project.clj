@@ -17,6 +17,8 @@
                  [hiccup "1.0.5"]
                  [http-kit "2.1.19"]
                  [prone "0.8.2"]
+                 [endophile "0.1.2"]
+                 [me.raynes/fs "1.4.6"]
 
                  [reagent "0.5.1"]
                  [reagent-forms "0.5.12"]
